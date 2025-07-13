@@ -1,0 +1,23 @@
+<div class="charts-container">
+    <header class="charts-header">
+      <h1>Monitoreo Histórico</h1>
+      <p class="subtitle">Velocidad y combustible de vehículos</p>
+  
+      <div class="selector-container">
+        <label for="deviceSelector">Selecciona vehículo:</label>
+        <select id="deviceSelector" [(ngModel)]="selectedDeviceId" (change)="updateChart()">
+          <option *ngFor="let id of deviceIds" [value]="id">{{ id }}</option>
+        </select>
+      </div>
+      
+    </header>
+  
+    <section class="chart-card">
+      <canvas #chartCanvas></canvas>
+    </section>
+  
+    <footer class="charts-footer">
+      <p>© 2025 - Sistema IoT Fleet Monitor</p>
+    </footer>
+  </div>
+  

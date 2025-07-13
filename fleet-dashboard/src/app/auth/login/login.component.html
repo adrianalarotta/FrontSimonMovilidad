@@ -1,0 +1,13 @@
+<div style="max-width: 400px; margin: 80px auto;">
+    <h2>Iniciar Sesión</h2>
+  
+    <form (ngSubmit)="login()">
+        <input [(ngModel)]="username" name="username" required placeholder="Usuario" />
+        <input [(ngModel)]="password" name="password" required type="password" placeholder="Contraseña" />
+        <button type="submit">Iniciar sesión</button>
+      </form>
+      
+      <div *ngIf="error" style="color: red;">{{ error }}</div>
+      
+  </div>
+  

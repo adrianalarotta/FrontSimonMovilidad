@@ -1,0 +1,48 @@
+.charts-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f5f7fa;
+    padding: 20px;
+  }
+  
+  .charts-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .charts-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: #1976d2;
+  }
+  
+  .subtitle {
+    color: #555;
+    font-size: 1rem;
+    margin-top: 5px;
+  }
+  
+  .chart-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .charts-footer {
+    margin-top: auto;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #888;
+    padding: 15px;
+  }
+  
+  canvas {
+    max-width: 100%;
+  }
+  
