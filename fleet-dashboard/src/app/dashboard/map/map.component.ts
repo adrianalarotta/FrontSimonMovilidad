@@ -9,25 +9,16 @@ import * as L from 'leaflet';
   selector: 'app-map',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <button (click)="logout()" style="position: absolute; top: 10px; right: 10px; z-index: 1000;">
-      Cerrar sesión
-    </button>
-
-    <!-- 🔔 Alerta solo para admins -->
-    <div *ngIf="isAdmin && alertas.length > 0" style="position: absolute; top: 60px; left: 10px; z-index: 1000; background: #f44336; color: white; padding: 10px; border-radius: 5px;">
-      🚨 {{ alertas[alertas.length - 1] }}
-    </div>
-
-    <div id="map" style="height: 500px;"></div>
-  `,
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-
   private map: any;
   private markers: { [id: string]: any } = {};
+  private userMovedMap = false;
   isAdmin: boolean = false;
-  alertas: string[] = [];
+  alertas: { [deviceId: string]: string } = {};
+
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -39,11 +30,19 @@ export class MapComponent implements OnInit {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+  cerrarAlerta(deviceId: string) {
+    delete this.alertas[deviceId];
+  }
+  
+  get alertasKeys() {
+    return Object.keys(this.alertas);
+  }
+  
 
   async ngOnInit() {
     console.log("🟢 ngOnInit ejecutado");
 
-    this.isAdmin = this.authService.isAdmin(); // ✅ Método que debes tener en AuthService
+    this.isAdmin = this.authService.isAdmin();
 
     if (isPlatformBrowser(this.platformId)) {
       const L = await import('leaflet') as typeof import('leaflet');
@@ -60,6 +59,11 @@ export class MapComponent implements OnInit {
 
     this.map = L.map('map').setView([4.60971, -74.08175], 13);
 
+    // 🔧 Detecta si el usuario movió o hizo zoom en el mapa
+    this.map.on('dragstart zoomstart', () => {
+      this.userMovedMap = true;
+    });
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
@@ -73,14 +77,18 @@ export class MapComponent implements OnInit {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const { device_id, lat, lon, fuel_level, temperature, alerta_combustible, autonomia_horas } = data;
+      const maskedDeviceId = this.isAdmin
+        ? device_id
+      : device_id.replace(/^(.{4}).+(.{4})$/, '$1****$2');
+
 
       if (!this.map) return;
 
-      const popupContent = `
-        <b>Vehículo:</b> ${device_id}<br>
-        <b>Combustible:</b> ${fuel_level} L<br>
-        <b>Temperatura:</b> ${temperature}°C
-      `;
+     const popupContent = `
+      <b>Vehículo:</b> ${maskedDeviceId}<br>
+      <b>Combustible:</b> ${fuel_level} L<br>
+      <b>Temperatura:</b> ${temperature}°C
+    `;
 
       if (this.markers[device_id]) {
         this.markers[device_id]
@@ -100,30 +108,16 @@ export class MapComponent implements OnInit {
           .openPopup();
 
         this.markers[device_id] = marker;
+
+        // Solo centra la vista la primera vez
+        this.map.setView([lat, lon], 13);
       }
-
-      // ✅ Muestra alerta solo si es admin y se activa la alerta
-console.log("🧪 Datos recibidos:", {
-  isAdmin: this.isAdmin,
-  alerta_combustible,
-  autonomia_horas,
-  fuel_level,
-  device_id
-});
-
-if (this.isAdmin && alerta_combustible) {
-  const alerta = `🚨 Vehículo ${device_id}: autonomía < 1h (${autonomia_horas}h), combustible: ${fuel_level} L.`;
-  console.log("✅ Mostrando alerta:", alerta);
-  this.alertas.push(alerta);
-} else {
-  console.log("ℹ️ No se mostró alerta. Condiciones:", {
-    isAdmin: this.isAdmin,
-    alerta_combustible
-  });
-}
-
-
-      this.map.setView([lat, lon], 13);
+    
+      if (this.isAdmin && alerta_combustible) {
+        const alerta = `🚨 Vehículo ${device_id}: autonomía < 1h (${autonomia_horas}h), combustible: ${fuel_level} L.`;
+        this.alertas[device_id] = alerta;
+      }
+      
     };
   }
 }

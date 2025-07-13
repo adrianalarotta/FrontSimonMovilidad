@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #d9e4f5, #f8f9fd);
+}
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top left, #e0f7fa, #f1f8ff);
+  padding: 2rem; // por si hay pantallas pequeñas
+}
+
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at top left, #e0f7fa, #f1f8ff);
+    padding: 2rem;
+  }
+  
+  .login-card {
+    background: linear-gradient(to bottom right, #ffffff, #f2f6fc);
+    padding: 3rem 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 420px;
+    min-height: 370px; // <- tarjeta más alta
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; // <- contenido hacia arriba
+    margin-bottom: 5rem;
+
+    h2 {
+      margin-bottom: 2rem;
+      font-weight: 700;
+      color: #333;
+      margin-top: 0.5rem; // <- sube un poco más el título
+    }
+  
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+  
+    input {
+      padding: 0.8rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1rem;
+  
+      &:focus {
+        outline: none;
+        border-color: #6c63ff;
+        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+      }
+    }
+  
+    button {
+      margin-top: 1rem;
+      padding: 0.9rem;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(to right, #6c63ff, #48c6ef);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+  
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3);
+      }
+    }
+  
+    .error-msg {
+      margin-top: 1rem;
+      color: #e53935;
+      font-weight: 500;
+    }
+  }
+  

@@ -1,1 +1,10 @@
+<h2 class="map-title">Ubicación en Tiempo Real de Vehículos</h2>
+
+<div class="notifications-wrapper" *ngIf="isAdmin && alertasKeys.length > 0">
+  <div class="notification" *ngFor="let key of alertasKeys">
+    <span>{{ alertas[key] }}</span>
+    <button class="close-btn" (click)="cerrarAlerta(key)">✖</button>
+  </div>
+</div>
+
 <div id="map" style="height: 500px;"></div>

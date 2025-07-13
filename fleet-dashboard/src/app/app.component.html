@@ -1,2 +1,20 @@
-<router-outlet></router-outlet>
-
+<header class="navbar">
+    <div class="logo">FleetMonitor</div>
+    <input type="checkbox" id="menu-toggle" />
+    <label for="menu-toggle" class="hamburger">&#9776;</label>
+    <nav class="menu">
+      <a (click)="inicio()">Inicio</a>
+      <a (click)="goToMapa()">Mapa</a>
+      <a (click)="goToCharts()">Gráficos</a>
+      <a (click)="logout()">Cerrar Sesión</a>
+    </nav>
+  </header>
+  
+  <main class="main-view">
+    <router-outlet></router-outlet>
+  </main>
+  
+  <footer class="footer">
+    © 2025 Monitoreo de Flotas · Desarrollado por tu equipo
+  </footer>
+  

@@ -31,23 +31,48 @@ export class ChartsComponent implements OnInit, AfterViewInit, OnDestroy {
   loadInitialData(): void {
     this.http.get<{ [device_id: string]: { timestamp: string, velocidad: number, fuel_level: number }[] }>(
       'http://localhost:8000/api/historico/'
-    ).subscribe((data) => {
-      this.deviceIds = Object.keys(data);
-      this.selectedDeviceId = this.deviceIds[0] || '';
+    ).subscribe({
+      next: (data) => {
+        this.deviceIds = Object.keys(data);
+        this.selectedDeviceId = this.deviceIds[0] || '';
   
-      for (const device_id of this.deviceIds) {
-        const registros = data[device_id];
-        this.history[device_id] = {
-          timestamps: registros.map(r => new Date(r.timestamp).toLocaleTimeString()),
-          speed: registros.map(r => r.velocidad),
-          fuel: registros.map(r => r.fuel_level)
-        };
+        for (const device_id of this.deviceIds) {
+          const registros = data[device_id];
+          this.history[device_id] = {
+            timestamps: registros.map(r => new Date(r.timestamp).toLocaleTimeString()),
+            speed: registros.map(r => r.velocidad),
+            fuel: registros.map(r => r.fuel_level)
+          };
+        }
+  
+        // Guardar en localStorage para uso offline
+        localStorage.setItem('historialDispositivos', JSON.stringify(this.history));
+        localStorage.setItem('listaDispositivos', JSON.stringify(this.deviceIds));
+        localStorage.setItem('ultimoSeleccionado', this.selectedDeviceId);
+  
+        this.updateChart();
+        this.connectWebSocket();
+      },
+      error: () => {
+        console.warn(' Error al obtener datos desde el servidor. Intentando cargar desde cache local...');
+        const cachedHistory = localStorage.getItem('historialDispositivos');
+        const cachedDeviceIds = localStorage.getItem('listaDispositivos');
+        const cachedSelected = localStorage.getItem('ultimoSeleccionado');
+  
+        if (cachedHistory && cachedDeviceIds) {
+          this.history = JSON.parse(cachedHistory);
+          this.deviceIds = JSON.parse(cachedDeviceIds);
+          this.selectedDeviceId = cachedSelected || this.deviceIds[0] || '';
+  
+          console.log('✅ Cargando historial desde localStorage');
+          this.updateChart();
+        } else {
+          console.error('❌ No se encontraron datos ni en el servidor ni en cache.');
+        }
       }
-  
-      this.updateChart();  // Mostrar datos del dispositivo seleccionado
-      this.connectWebSocket();  // Luego conectar WebSocket
     });
   }
+  
 
   updateChart(): void {
     const h = this.history[this.selectedDeviceId];
@@ -121,7 +146,11 @@ export class ChartsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   connectWebSocket(): void {
     this.socket = new WebSocket('ws://localhost:8000/ws/ubicacion/');
-  
+    this.chart.update();
+
+    // Actualizar cache local
+    localStorage.setItem('historialDispositivos', JSON.stringify(this.history));
+
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const { device_id, velocidad, fuel_level } = data;

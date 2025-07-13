@@ -1,14 +1,17 @@
-<div class="header">
-    Sistema de Monitoreo de Flotas IoT
+<div class="home-container">
+  <div class="carousel-section">
+    <div class="carousel">
+      <img src="img1.jpg" alt="Vehículo 1" />
+      <img src="img2.jpg" alt="Mapa" />
+      <img src="img3.jpg" alt="Sensores IoT" />
+    </div>
   </div>
-  
-  <div class="container">
-    <h2>Bienvenido, ¿qué deseas visualizar?</h2>
-    <button pButton label="Ver Mapa" (click)="goToMap()" class="p-button-primary"></button>
-    <button pButton label="Ver Gráficos" (click)="goToCharts()" class="p-button-secondary"></button>
+
+  <div class="overlay-section">
+    <h1>Bienvenido al Sistema IoT de Monitoreo Vehicular</h1>
+    <div class="actions">
+      <button class="action-btn" (click)="goToMapa()">Ver Mapa</button>
+      <button class="action-btn alt" (click)="goToCharts()">Ver Gráficos</button>
+    </div>
   </div>
-  
-  <div class="footer">
-    © 2025 Monitoreo de Flotas · Desarrollado por tu equipo
-  </div>
-  
+</div>

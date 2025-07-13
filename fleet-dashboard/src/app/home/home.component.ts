@@ -13,7 +13,7 @@ import { ButtonModule } from 'primeng/button'; // o usa Angular Material
 export class HomeComponent {
   constructor(private router: Router) {}
 
-  goToMap() {
+  goToMapa() {
     this.router.navigate(['/dashboard']);
   }
 

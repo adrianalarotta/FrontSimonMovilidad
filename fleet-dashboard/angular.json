@@ -36,6 +36,7 @@
               "node_modules/leaflet/dist/leaflet.css"
               
             ],
+            
             "scripts": [],
             "server": "src/main.server.ts",
             "outputMode": "server",
@@ -95,6 +96,7 @@
               {
                 "glob": "**/*",
                 "input": "public"
+                
               }
             ],
             "styles": [
